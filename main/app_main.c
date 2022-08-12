@@ -27,7 +27,7 @@
 #define WEB_PORT "80"
 #define WEB_PATH "/"
 
-static const char *TAG = "example";
+static const char *TAG = "htpp request";
 
 static const char *REQUEST = "GET " WEB_PATH " HTTP/1.0\r\n"
     "Host: "WEB_SERVER":"WEB_PORT"\r\n"
@@ -50,7 +50,7 @@ static void http_get_task(void *pvParameters)
 
         if(err != 0 || res == NULL) {
             ESP_LOGE(TAG, "DNS lookup failed err=%d res=%p", err, res);
-            vTaskDelay(1000 / portTICK_PERIOD_MS);
+            vTaskDelay(1000 / portTICK_PERIOD_MS); //delay 1s
             continue;
         }
 
