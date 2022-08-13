@@ -23,16 +23,23 @@
 #include "lwip/dns.h"
 
 /* Constants that aren't configurable in menuconfig */
-#define WEB_SERVER "example.com"
+#define WEB_SERVER "api.thingspeak.com"
 #define WEB_PORT "80"
 #define WEB_PATH "/"
 
+#define API_KEY "MOQ3SYV4PNJVSLVW"
+
 static const char *TAG = "htpp request";
 
-static const char *REQUEST = "GET " WEB_PATH " HTTP/1.0\r\n"
-    "Host: "WEB_SERVER":"WEB_PORT"\r\n"
-    "User-Agent: esp-idf/1.0 esp32\r\n"
-    "\r\n";
+
+
+char REQUEST[512];
+char recv_buf[512];
+char SUBREQUEST[100];
+uint temp,humi;
+
+
+
 
 static void http_get_task(void *pvParameters)
 {
@@ -43,7 +50,11 @@ static void http_get_task(void *pvParameters)
     struct addrinfo *res;
     struct in_addr *addr;
     int s, r;
-    char recv_buf[64];
+    //char recv_buf[64];
+    temp = 30;
+    humi = 25;
+    sprintf(SUBREQUEST,"api_key=MOQ3SYV4PNJVSLVW&field1=%d&field2=%d",temp,humi);
+    sprintf(REQUEST,"POST /update HTTP/1.1\nHost: api.thingspeak.com\nConnection: close\nConnect-Type: application/x-www-form-urlencoded\nContent-Length:%d\n\n%s\n",strlen(SUBREQUEST),SUBREQUEST);
 
     while(1) {
         int err = getaddrinfo(WEB_SERVER, WEB_PORT, &hints, &res);
